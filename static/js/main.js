@@ -1,0 +1,1 @@
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){const s=document.querySelector('#carSearch');if(s){e.preventDefault();s.focus()}}});

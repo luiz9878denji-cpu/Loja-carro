@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Dados de entrega | AutoPrime{% endblock %}
+{% block head %}<style>
+.checkout-layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:28px;padding:25px 0 65px;align-items:start}.checkout-card,.order-summary{background:linear-gradient(145deg,#102338,#0a1928);border:1px solid var(--line);border-radius:15px;padding:27px}.checkout-card h1{font-size:34px;margin:12px 0 8px}.checkout-card>p{color:var(--muted);font-size:13px;line-height:1.7}.form-section-title{font:600 15px var(--display);margin:27px 0 12px;color:#eaf6ff}.delivery-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.delivery-field{display:flex;flex-direction:column;gap:7px}.delivery-field.wide{grid-column:1/-1}.delivery-field label{font-size:11px;color:#afc4d6}.delivery-field input,.delivery-field select,.delivery-field textarea{width:100%;min-height:44px;border:1px solid #294057;background:#091725;border-radius:7px;padding:11px 12px;color:#f3f8ff;font:13px var(--font);outline:none}.delivery-field input:focus,.delivery-field textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #36d6e718}.delivery-field textarea{min-height:82px;resize:vertical}.required-note{font-size:10px;color:#8198ad;margin-top:12px}.order-summary{position:sticky;top:20px}.order-summary img{width:100%;height:170px;object-fit:cover;border-radius:9px}.order-summary h2{font-size:21px;margin:17px 0 5px}.order-summary p{font-size:12px;color:var(--muted);line-height:1.6}.summary-line{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:#a9bdce;padding:9px 0;border-bottom:1px solid var(--line)}.summary-total{display:flex;justify-content:space-between;align-items:center;padding-top:17px;margin-top:8px}.summary-total strong{font:700 20px var(--display);color:var(--cyan)}.secure-delivery{font-size:10px;color:#8fa8bd;line-height:1.6;margin-top:17px;padding:12px;background:#0a1b2a;border-radius:8px}.checkout-actions{display:flex;gap:12px;align-items:center;margin-top:24px}.checkout-actions .button{flex:1}.back-link{font-size:11px;color:var(--muted)}@media(max-width:850px){.checkout-layout{grid-template-columns:1fr}.order-summary{position:static;grid-row:1}.checkout-card{grid-row:2}}@media(max-width:560px){.checkout-card,.order-summary{padding:19px}.delivery-grid{grid-template-columns:1fr}.delivery-field.wide{grid-column:auto}.checkout-card h1{font-size:29px}.checkout-actions{flex-direction:column-reverse;align-items:stretch}}
+</style>{% endblock %}
+{% block content %}
+<div class="breadcrumb"><a href="{{ url_for('index') }}">← Catálogo</a><span>/</span><span>Entrega</span></div>
+<div class="eyebrow"><i></i> ETAPA FINAL / DADOS DE ENTREGA</div>
+<section class="checkout-layout">
+  <div class="checkout-card">
+    <div class="eyebrow">◈ QUASE LÁ</div><h1>Para onde enviamos seu <span style="color:var(--cyan)">novo carro?</span></h1>
+    <p>Informe os dados do destinatário e o endereço onde deseja receber o veículo. Nossa equipe poderá entrar em contato para confirmar os detalhes da solicitação.</p>
+    <form method="post" action="{{ url_for('finalizar_entrega') }}" id="deliveryForm">
+      <input type="hidden" name="carro_id" value="{{ carro.id }}"><input type="hidden" name="cor" value="{{ cor }}">
+      {% for a in acessorios %}<input type="hidden" name="acessorios" value="{{ a.nome }}">{% endfor %}
+      <h3 class="form-section-title">01 — Dados do destinatário</h3>
+      <div class="delivery-grid">
+        <div class="delivery-field wide"><label for="nome_destinatario">Nome completo *</label><input id="nome_destinatario" name="nome_destinatario" autocomplete="name" required placeholder="Nome de quem receberá o veículo"></div>
+        <div class="delivery-field"><label for="telefone">Telefone / WhatsApp *</label><input id="telefone" name="telefone" type="tel" autocomplete="tel" required placeholder="(00) 00000-0000"></div>
+        <div class="delivery-field"><label for="email">E-mail *</label><input id="email" name="email" type="email" autocomplete="email" required placeholder="voce@email.com"></div>
+      </div>
+      <h3 class="form-section-title">02 — Endereço de entrega</h3>
+      <div class="delivery-grid">
+        <div class="delivery-field"><label for="cep">CEP *</label><input id="cep" name="cep" inputmode="numeric" autocomplete="postal-code" required placeholder="00000-000" maxlength="9"></div>
+        <div class="delivery-field"><label for="estado">Estado (UF) *</label><input id="estado" name="estado" maxlength="2" required placeholder="GO" autocomplete="address-level1"></div>
+        <div class="delivery-field wide"><label for="endereco">Rua / Avenida *</label><input id="endereco" name="endereco" required placeholder="Nome da rua" autocomplete="street-address"></div>
+        <div class="delivery-field"><label for="numero">Número *</label><input id="numero" name="numero" required placeholder="Nº" ></div>
+        <div class="delivery-field"><label for="complemento">Complemento</label><input id="complemento" name="complemento" placeholder="Apto, bloco, referência"></div>
+        <div class="delivery-field"><label for="bairro">Bairro *</label><input id="bairro" name="bairro" required autocomplete="address-level3"></div>
+        <div class="delivery-field"><label for="cidade">Cidade *</label><input id="cidade" name="cidade" required autocomplete="address-level2"></div>
+        <div class="delivery-field wide"><label for="observacoes">Observações para a entrega</label><textarea id="observacoes" name="observacoes" placeholder="Ponto de referência ou melhor horário para contato (opcional)"></textarea></div>
+      </div>
+      <p class="required-note">* Campos obrigatórios. Não informe dados de cartão ou senha neste formulário.</p>
+      <div class="checkout-actions"><a class="back-link" href="{{ url_for('index') }}">Voltar ao catálogo</a><button class="button button-primary" type="submit">Enviar solicitação de compra <span>→</span></button></div>
+    </form>
+  </div>
+  <aside class="order-summary">
+    <div class="eyebrow"><i></i> RESUMO DO VEÍCULO</div><img src="{{ carro.imagem }}" alt="{{ carro.nome }}"><h2>{{ carro.nome }}</h2><p>Configuração selecionada para sua solicitação.</p>
+    <div class="summary-line"><span>Pintura {{ cor }}</span><b>{% if preco_cor %}{{ moeda(preco_cor) }}{% else %}Inclusa{% endif %}</b></div>
+    {% for a in acessorios %}<div class="summary-line"><span>{{ a.nome }}</span><b>{{ moeda(a.preco) }}</b></div>{% endfor %}
+    <div class="summary-total"><span>Total estimado</span><strong>{{ moeda(total) }}</strong></div>
+    <div class="secure-delivery">◇ Seus dados serão usados para registrar a solicitação e permitir que a equipe entre em contato. Esta etapa não processa pagamento nem confirma a compra.</div>
+  </aside>
+</section>
+{% endblock %}
